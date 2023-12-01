@@ -10,6 +10,9 @@ class ADE {
     const proxy = "http://proxy.unicaen.fr:3128";
     const url = "http://ade.unicaen.fr:80/jsp/custom/modules/plannings/anonymous_cal.jsp?projectId=4&calType=ical&";
 
+    /**
+     * Renvoie les données envoyer par l'api.
+     */
     public function getData(int $resource) : array {
         $curl = curl_init();
 

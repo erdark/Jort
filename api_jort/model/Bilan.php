@@ -11,6 +11,10 @@ class Bilan {
     private int $td;
     private int $tp;
 
+    /**
+     * Fabrique les bilans par cours
+     * @return array
+     */
     public static function fabriqueBilansModule(array $cours) : array {
         $cour = null;
         $bilans = [];
@@ -52,14 +56,26 @@ class Bilan {
         }
     }
 
+    /**
+     * Renvoie cm
+     * @return int
+     */
     public function getCm(): int {
         return $this->cm;
     }
 
+    /**
+     * Revoie les td
+     * @return int
+     */
     public function getTd(): int {
         return $this->td;
     }
 
+    /**
+     * Renvoie les tp
+     * @return int
+     */
     public function getTp(): int {
         return $this->tp;
     }
