@@ -1,52 +1,60 @@
 <?php
+// https://dev-lerosie221.users.info.unicaen.fr/api_jort/index.php?action=prof&nom=JACQUIER&prenom=Yohann
 
-require_once('./model/ADE.php');
-require_once('./model/cours/Cours.php');
-require_once('./model/cours/AdeToCoursAdapter.php');
+require_once('./model/EDT.php');
+require_once('./model/Bilan.php');
 
-use Application\Model\ADE\ADE;
-use Application\Model\Cours\Cours\Cours;
-use Application\Model\Cours\AdeToCoursAdapter\AdeToCoursAdapter;
+use Application\Model\EDT\EDT;
 
-?>
-
-
-
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADE</title>
-</head>
-<body>
-<?php
-
-$adapter = new AdeToCoursAdapter(new ADE());
-$coursNoms = [];
-$coursProfs = [];
-
-foreach ($adapter->getCours() as $element) {
-    if (!$element instanceof Cours) {
-        continue;
-    }
-    $cour = $element;
-
-    if (!in_array($cour->nom, $coursNoms)) {
-        $coursNoms[] = $cour->nom;
-    }
-    if (!in_array($cour->prof, $coursProfs)) {
-        $coursProfs[] = $cour->prof;
-    }
+if (!isset($_GET['action'])) {
+    exit;
 }
 
-foreach ($coursNoms as $nom) {
-    ?> <p><?= $nom ?> <?php
-}
-foreach ($coursProfs as $prof) {
-    ?> <p><?= $prof ?> <?php
+$edt = new EDT();
+
+if ($_GET['action'] === "prof") {
+    $donneesJSON = array();
+    $nom;
+    $prenom;
+
+    if (!isset($_GET['nom'])) {
+        $nom = "";
+    } else {
+        $nom = $_GET['nom'];
+    }
+
+    if (!isset($_GET['prenom'])) {
+        $prenom = "";
+    } else {
+        $prenom = $_GET['prenom'];
+    }
+
+    foreach ($edt->getCoursProf($nom . $prenom) as $nom => $bilan) {
+        $donneesJSON[] = array(
+            'nom' => $nom,
+            'tp' => $bilan->getTp(),
+            'td' => $bilan->getTd(),
+            'cm' => $bilan->getCm()
+        );
+    }
+
+    echo json_encode($donneesJSON);
 }
 
-?>    
-</body>
-</html>
+/*
+echo json_encode($bilans) . "<br>";
+
+foreach ($bilans as $nom => $bilan) {
+    echo $nom . "<br>";
+    echo $bilan->getTp() . "<br>";
+    echo $bilan->getTd() . "<br>";
+    echo $bilan->getCm() . "<br>";
+    echo "---------------------- <br>";
+}*/
+
+
+// Remplissage du tableau avec les données des objets
+
+
+// Transformation du tableau en JSON
+

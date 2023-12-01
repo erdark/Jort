@@ -17,7 +17,6 @@ implements IGetCours {
 
     public function __construct(ADE $ade) {
         $this->ade = $ade;
-
         $this->resources = [
             1200,   // TP1
             1201,   // Erreur
@@ -28,7 +27,7 @@ implements IGetCours {
         ];
     }
 
-    public function getCours(): array {
+    public function getCours(array $resources): array {
         $coursADE = [];
         $cours = [];
 
@@ -55,9 +54,19 @@ implements IGetCours {
 
             // Coupe la chaîne à partir du dernier espace
             if ($position !== false) {
-                $cours->nom = substr($ade['SUMMARY'], 0, $position);
+                $cours->nom = self::formatCoursNom(substr($ade['SUMMARY'], 0, $position));
             }
         } 
+
+        // Cour : type
+        if (array_key_exists('SUMMARY', $ade)) {
+            $mots = explode(' ', $ade['SUMMARY']);
+            $cours->type = substr(
+                end($mots),
+                0,
+                2
+            );
+        }
 
         // Cour : lieu
         if (array_key_exists('LOCATION', $ade)) {
@@ -138,7 +147,22 @@ implements IGetCours {
         if ($position !== false) {
             $heure = substr($heureBrute, $position + 1);
         }
-
+        
         return substr($heure, 0, 4);
+    }
+
+    private function formatCoursNom(string $nom): string {
+        $nomNouveau = $nom;
+        $premiereLettre = mb_substr($nom, 0, 1);
+
+        if (!($premiereLettre == 'R' || $premiereLettre == 'S')) {
+            if ($premiereLettre == 'r' || $premiereLettre == 's') {
+                $nomNouveau = ucfirst($nom);
+            } else {
+                $nomNouveau ='R' . substr($nom, 1);
+            }
+        }
+
+        return substr($nomNouveau, 0, 5);
     }
 }
