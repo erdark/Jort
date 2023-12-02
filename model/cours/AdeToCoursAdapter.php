@@ -23,7 +23,7 @@ implements IGetCours {
         $cours = [];
 
         foreach ($resources as $resource) {
-            $coursADE += $this->ade->getData($resource);
+            $coursADE = array_merge($coursADE, $this->ade->getData($resource));
         }
 
         foreach ($coursADE as $courADE) {
@@ -41,11 +41,13 @@ implements IGetCours {
 
         // Cour : nom
         if (array_key_exists('SUMMARY', $ade)) {
-            $position = strrpos($ade['SUMMARY'], ' ');
+            $nom = \Transliterator::create('NFD; [:Nonspacing Mark:] Remove; NFC')
+                ->transliterate($ade['SUMMARY']);
+            $position = strrpos($nom, ' ');
 
             // Coupe la chaîne à partir du dernier espace
             if ($position !== false) {
-                $cours->nom = self::formatCoursNom(substr($ade['SUMMARY'], 0, $position));
+                $cours->nom = self::formatCoursNom(substr($nom, 0, $position));
             }
         } 
 
@@ -149,8 +151,10 @@ implements IGetCours {
         if (!($premiereLettre == 'R' || $premiereLettre == 'S')) {
             if ($premiereLettre == 'r' || $premiereLettre == 's') {
                 $nomNouveau = ucfirst($nom);
-            } else {
+            } else if (is_numeric($premiereLettre)) {
                 $nomNouveau ='R' . substr($nom, 1);
+            } else {
+                return $nom;
             }
         }
 

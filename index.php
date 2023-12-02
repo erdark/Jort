@@ -1,5 +1,5 @@
 <?php
-// https://dev-lerosie221.users.info.unicaen.fr/Jort/index.php?action=prof&nom=JEANPIERRE&prenom=Laurent
+// https://dev-lerosie221.users.info.unicaen.fr/Jort/index.php?action=prof&nom=DORBEC&prenom=paUl
 
 require_once('./model/EDT.php');
 require_once('./model/Module.php');

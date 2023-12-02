@@ -19,7 +19,7 @@ class ADE {
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($curl, CURLOPT_PROXY, self::proxy);
         curl_setopt($curl, CURLOPT_URL, (string) (self::url .
-            "resources=$resource&lastDate=2023-12-31&firstDate=2023-09-01"
+            "resources=$resource&lastDate=2024-12-31&firstDate=2023-09-01"
         ));
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 

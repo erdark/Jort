@@ -42,7 +42,6 @@ class Cours {
         return $this->nom === $autre->nom
 			&& $this->type === $autre->type
         	&& $this->prof === $autre->prof
-			&& $this->groupe === $autre->groupe
 			&& $this->lieu === $autre->lieu
             && $this->date === $autre->date
             && $this->heureDebut === $autre->heureDebut

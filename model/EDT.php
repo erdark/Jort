@@ -21,12 +21,23 @@ class EDT {
 
     public function __construct() {
         $this->resources = [
-            1200,   // TP1
-            1201,   // Erreur
-            1204,   // TP2
-            1205,   // TP3
-            1208,   // TP4
-            1209    // TP5
+            1177,   // 1A TP1
+            95403,  // 1A TP2
+            1185,   // 1A TP3
+            1186,   // 1A TP4
+            1189,   // 1A TP5
+            1191,   // 1A TP6
+
+            1200,   // 2A TP1
+            1204,   // 2A TP2
+            1205,   // 2A TP3
+            1208,   // 2A TP4
+            1209,   // 2A TP5
+
+            36647,  // 3A TP1
+            36648,  // 3A TP2
+            36649,  // 3A TP3
+            36650   // 3A TP4
         ];
         $this->ade = new AdeToCoursAdapter();
         $this->cours = $this->ade->getCours($this->resources);
@@ -45,7 +56,7 @@ class EDT {
             if (StringUtil::condenser($cour->prof) === StringUtil::condenser($prof)) {
                 if (mb_substr($cour->nom, 0, 1) == 'R') {
                     $modules[] = $cour;
-                } elseif (mb_substr($cour->nom, 0, 1) == 'S') {
+                } elseif (mb_substr($cour->nom, 0, 2) == 'SA') {
                     $saes[] = $cour;
                 } else {
                     $modules[] = $cour;
@@ -56,28 +67,8 @@ class EDT {
         }
 
         $coursProf = Bilan::fabriqueBilansModule($modules);
-        $coursProf += Bilan::fabriqueBilansSAE($saes);
+        $coursProf = array_merge($coursProf, Bilan::fabriqueBilansSAE($saes));
         
         return $coursProf;
-    }
-
-    private function trierText(array $tab): array {
-
-        return [];
-    }
-    private function trierTableauObjets(array $tableau): array {
-        for ($ligne = 0; $ligne < count($tableau); $ligne++) {
-            for ($i = $ligne; $i < count($tableau); $i++) {
-                if (!array_key_exists('index', $tableau[$i]) || !array_key_exists('valeur', $tableau[$i])) {
-                    return [];
-                }
-                if ($tableau[$ligne]['valeur'] < $tableau[$i]['valeur']) {
-                    $temp = $tableau[$i];
-                    $tableau[$i] = $tableau[$ligne];
-                    $tableau[$ligne] = $temp;
-                }
-            }
-        }
-        return $tableau;
     }
 }

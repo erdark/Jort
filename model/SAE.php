@@ -8,8 +8,8 @@ namespace Application\Model\SAE;
 class SAE {
     private float $nbHeure;
 
-    public function __constrcut() {
-        $this->nbHeure =0;
+    public function __construct() {
+        $this->nbHeure = 0;
     }
 
     /**
@@ -22,7 +22,7 @@ class SAE {
 
     /**
      * Ajoute des heures
-     * @param float nombre d'heures
+     * @param float $nbHeure nombre d'heures
      */
     public function ajouterHeure(float $nbHeure) {
         $this->nbHeure += $nbHeure;

@@ -80,7 +80,6 @@ class Bilan {
                 if (!$cour instanceof Cours) {
                     continue;
                 }
-
                 $sae->ajouterHeure($cour->getDuree());
             }
 
