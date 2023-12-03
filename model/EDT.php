@@ -43,7 +43,7 @@ class EDT {
         $this->cours = $this->ade->getCours($this->resources);
     }
 
-    public function getCoursProf(string $prof): array {
+    public function getHeureProf(string $prof): array {
         $coursProf = [];
         $modules = [];
         $saes = [];
@@ -61,8 +61,6 @@ class EDT {
                 } else {
                     $modules[] = $cour;
                 }
-            } else {
-                array_splice($this->cours, $index, 1);
             }
         }
 
@@ -70,5 +68,27 @@ class EDT {
         $coursProf = array_merge($coursProf, Bilan::fabriqueBilansSAE($saes));
         
         return $coursProf;
+    }
+
+    public function getHeureMatiere(string $id): array {
+        $coursMatiere = [];
+
+        foreach ($this->cours as $index => $cour) {
+            if (!$cour instanceof Cours) {
+                continue;
+            }
+
+            if (StringUtil::condenser($cour->nom) === StringUtil::condenser($id)) {
+                if (mb_substr($cour->nom, 0, 1) == 'R') {
+
+                } elseif (mb_substr($cour->nom, 0, 2) == 'SA') {
+
+                } else {
+
+                }
+            }
+        }
+
+        return $coursMatiere;
     }
 }

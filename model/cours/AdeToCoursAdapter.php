@@ -2,13 +2,15 @@
 
 namespace Application\Model\Cours\AdeToCoursAdapter;
 
+require_once('./lib/StringUtil.php');
+require_once('./model/ADE.php');
 require_once('./model/cours/IGetCours.php');
 require_once('./model/cours/Cours.php');
-require_once('./model/ADE.php');
 
+use Application\Model\ADE\ADE;
+use Application\Lib\StringUtil\StringUtil;
 use Application\Model\Cours\IGetCours\IGetCours;
 use Application\Model\Cours\Cours\Cours;
-use Application\Model\ADE\ADE;
 
 class AdeToCoursAdapter
 implements IGetCours {
@@ -45,10 +47,7 @@ implements IGetCours {
                 ->transliterate($ade['SUMMARY']);
             $position = strrpos($nom, ' ');
 
-            // Coupe la chaîne à partir du dernier espace
-            if ($position !== false) {
-                $cours->nom = self::formatCoursNom(substr($nom, 0, $position));
-            }
+            $cours->nom = self::formatCoursNom(substr($nom, 0, 7));
         } 
 
         // Cour : type
@@ -146,6 +145,7 @@ implements IGetCours {
 
     private function formatCoursNom(string $nom): string {
         $nomNouveau = $nom;
+        $position = 0;
         $premiereLettre = mb_substr($nom, 0, 1);
 
         if (!($premiereLettre == 'R' || $premiereLettre == 'S')) {
@@ -153,11 +153,13 @@ implements IGetCours {
                 $nomNouveau = ucfirst($nom);
             } else if (is_numeric($premiereLettre)) {
                 $nomNouveau ='R' . substr($nom, 1);
-            } else {
-                return $nom;
             }
         }
 
-        return substr($nomNouveau, 0, 5);
+        if (($position = StringUtil::positionDernierChiffre($nomNouveau)) != -1) {
+            return substr($nomNouveau, 0, $position + 1);
+        }
+
+        return $nomNouveau;
     }
 }

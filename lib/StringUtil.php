@@ -20,4 +20,14 @@ class StringUtil {
         }
         return intval($nombre);
     }
+
+    public static function positionDernierChiffre(string $chaine): int {
+        for ($i = strlen($chaine) - 1; $i >= 0; $i--) {
+            if (is_numeric($chaine[$i])) {
+                return $i;
+            }
+        }
+
+        return -1;
+    }
 }

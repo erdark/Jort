@@ -1,5 +1,6 @@
 <?php
 // https://dev-lerosie221.users.info.unicaen.fr/Jort/index.php?action=prof&nom=DORBEC&prenom=paUl
+// https://dev-lerosie221.users.info.unicaen.fr/Jort/index.php?action=matiere&id=r1.01
 
 require_once('./model/EDT.php');
 require_once('./model/Module.php');
@@ -32,7 +33,7 @@ if ($_GET['action'] === "prof") {
         $prenom = $_GET['prenom'];
     }
 
-    foreach ($edt->getCoursProf($nom . $prenom) as $moduleNom => $element) {
+    foreach ($edt->getHeureProf($nom . $prenom) as $moduleNom => $element) {
         if ($element instanceof Module) {
             $donneesJSON[] = array(
                 'nom' => $moduleNom,
@@ -47,6 +48,19 @@ if ($_GET['action'] === "prof") {
             );
         }
     }
+
+    echo json_encode($donneesJSON);
+} else if ($_GET['action'] === 'matiere') {
+    $donneesJSON = array();
+    $id;
+
+    if (!isset($_GET['id'])) {
+        $id = "";
+    } else {
+        $id = $_GET['id'];
+    }
+
+
 
     echo json_encode($donneesJSON);
 }
