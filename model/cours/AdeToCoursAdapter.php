@@ -45,9 +45,8 @@ implements IGetCours {
         if (array_key_exists('SUMMARY', $ade)) {
             $nom = \Transliterator::create('NFD; [:Nonspacing Mark:] Remove; NFC')
                 ->transliterate($ade['SUMMARY']);
-            $position = strrpos($nom, ' ');
 
-            $cours->nom = self::formatCoursNom(substr($nom, 0, 7));
+            $cours->nom = self::formatCoursNom($nom);
         } 
 
         // Cour : type
@@ -153,8 +152,11 @@ implements IGetCours {
                 $nomNouveau = ucfirst($nom);
             } else if (is_numeric($premiereLettre)) {
                 $nomNouveau ='R' . substr($nom, 1);
+            } else {
+                return $nom;
             }
         }
+        $nomNouveau = (substr($nomNouveau, 0, 7));
 
         if (($position = StringUtil::positionDernierChiffre($nomNouveau)) != -1) {
             return substr($nomNouveau, 0, $position + 1);
