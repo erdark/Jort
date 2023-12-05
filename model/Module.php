@@ -3,7 +3,7 @@
 namespace Application\Model\Module;
 
 /**
- * Gère un cours
+ * Gère une ressources ou une sae
  */
 class Module {
     private float $cm;

@@ -3,109 +3,37 @@
 namespace Application\Model\Bilan;
 
 require_once('./model/Module.php');
-require_once('./model/SAE.php');
 require_once('./model/cours/Cours.php');
 
 use Application\Model\Module\Module;
-use Application\Model\SAE\SAE;
 use Application\Model\Cours\Cours\Cours;
 
 /**
- * Fabrique des bilans
+ * Synthétise des cours
  */
 class Bilan {
 
     /**
-     * Fabrique les bilans par cours
-     * @return array
+     * Synthétises des cours en fonction d'un de leur atribue
+     * @param array $cours listes des cours
+     * @param string $element nom de l'atribue trier
+     * @return array les éléments synthétisé 
      */
-    public static function fabriqueBilansModule(array $cours) : array {
+    public static function fabriqueBilan(array $cours, string $element): array {
         $bilans = [];
 
-        // Regroupe les cours par module
+        // trie les cours par elements
         foreach ($cours as $cour) {
-            if (!$cour instanceof Cours) {
-                continue;
+            if ($cour instanceof Cours && property_exists($cour, $element)) {
+                $bilans[$cour->{$element}][] = $cour;
             }
-            $bilans[$cour->nom][] = $cour;
         }
-
-        // fabrique le bilan de chaque module
+        
+        // fabrique le bilan de chaque elements
         foreach ($bilans as $cle => $cours) {
             $module = new Module();
 
-            // fabrique un Module
-            foreach ($cours as $cour) {
-                if (!$cour instanceof Cours) {
-                    continue;
-                }
-
-                switch ($cour->type) {
-                case "TP":
-                    $module->ajouterTp($cour->getDuree());
-                    break;
-                case "TD":
-                    $module->ajouterTd($cour->getDuree());
-                    break;
-                default:
-                    $module->ajouterCm($cour->getDuree());
-                    break;
-                }
-            }
-
-            $bilans[$cle] = $module;
-        }
-
-        return $bilans;
-    }
-
-    public static function fabriqueBilansSAE(array $cours) : array {
-        $cour = null;
-        $bilans = [];
-
-        // Regroupe les cours par sae
-        foreach ($cours as $cour) {
-            if (!$cour instanceof Cours) {
-                continue;
-            }
-            $bilans[$cour->nom][] = $cour;
-        }
-
-        // fabrique le bilan de chaque sae
-        foreach ($bilans as $cle => $cours) {
-            $sae = new SAE();
-
-            // fabrique une SAE
-            foreach ($cours as $cour) {
-                if (!$cour instanceof Cours) {
-                    continue;
-                }
-                $sae->ajouterHeure($cour->getDuree());
-            }
-
-            $bilans[$cle] = $sae;
-        }
-
-        return $bilans;
-    }
-
-    public static function fabriqueBilansProf(array $cours) : array {
-        $cour = null;
-        $bilans = [];
-
-        // Regroupe les cours par prof
-        foreach ($cours as $cour) {
-            if (!$cour instanceof Cours) {
-                continue;
-            }
-            $bilans[$cour->prof][] = $cour;
-        }
-
-        // fabrique le bilan de chaque prof
-        foreach ($bilans as $cle => $cours) {
-            $module = new Module();
-
-            // fabrique un Module pour un prof
+            // fabrique un Module pour un elements
             foreach ($cours as $cour) {
                 if (!$cour instanceof Cours) {
                     continue;

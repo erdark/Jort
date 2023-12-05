@@ -47,44 +47,29 @@ class EDT {
 
     public function getHeureProf(string $prof): array {
         $coursProf = [];
-        $modules = [];
-        $saes = [];
 
-        foreach ($this->cours as $index => $cour) {
+        foreach ($this->cours as $cour) {
             if (!$cour instanceof Cours) {
                 continue;
-            }
-
-            if (StringUtil::condenser($cour->prof) === StringUtil::condenser($prof)) {
-                if (mb_substr($cour->nom, 0, 1) == 'R') {
-                    $modules[] = $cour;
-                } elseif (mb_substr($cour->nom, 0, 2) == 'SA') {
-                    $saes[] = $cour;
-                } else {
-                    $modules[] = $cour;
-                }
+            } elseif (StringUtil::condenser($cour->prof) === StringUtil::condenser($prof)) {
+                $coursProf[] = $cour;
             }
         }
 
-        $coursProf = Bilan::fabriqueBilansModule($modules);
-        $coursProf = array_merge($coursProf, Bilan::fabriqueBilansSAE($saes));
-        
-        return $coursProf;
+        return Bilan::fabriqueBilan($coursProf, "nom");
     }
 
-    public function getHeureMatiere(string $id): array {
+    public function getHeureModule(string $nom): array {
         $coursMatiere = [];
 
-        foreach ($this->cours as $index => $cour) {
+        foreach ($this->cours as $cour) {
             if (!$cour instanceof Cours) {
                 continue;
-            }
-
-            if (StringUtil::condenser($cour->nom) === StringUtil::condenser($id)) {
+            } elseif (StringUtil::condenser($cour->nom) === StringUtil::condenser($nom)) {
                 $coursMatiere[] = $cour;
             }
         }
 
-        return Bilan::fabriqueBilansModule($coursMatiere);
+        return Bilan::fabriqueBilan($coursMatiere, "prof");
     }
 }
