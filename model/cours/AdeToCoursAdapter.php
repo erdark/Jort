@@ -2,13 +2,15 @@
 
 namespace Application\Model\Cours\AdeToCoursAdapter;
 
+require_once('./lib/Date.php');
 require_once('./lib/StringUtil.php');
 require_once('./model/ADE.php');
 require_once('./model/cours/IGetCours.php');
 require_once('./model/cours/Cours.php');
 
-use Application\Model\ADE\ADE;
+use Application\Lib\Date\Date;
 use Application\Lib\StringUtil\StringUtil;
+use Application\Model\ADE\ADE;
 use Application\Model\Cours\IGetCours\IGetCours;
 use Application\Model\Cours\Cours\Cours;
 
@@ -16,8 +18,11 @@ class AdeToCoursAdapter
 implements IGetCours {
     private ADE $ade;
 
-    public function __construct() {
-        $this->ade = new ADE();
+    public function __construct(Date $date) {
+        $this->ade = new ADE(
+            $date,
+            new Date($date->getAnnee(), $date->getMois(), $date->getNbJourMois())
+        );
     }
 
     public function getCours(array $resources): array {

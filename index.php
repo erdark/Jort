@@ -1,11 +1,13 @@
 <?php
-// https://dev-lerosie221.users.info.unicaen.fr/Jort/index.php?action=prof&nom=DORBEC&prenom=paUl
-// https://dev-lerosie221.users.info.unicaen.fr/Jort/index.php?action=matiere&id=r1.01
+// https://dev-lerosie221.users.info.unicaen.fr/Jort/index.php?action=prof&annee=2023&mois=12&nom=DORBEC&prenom=paUl
+// https://dev-lerosie221.users.info.unicaen.fr/Jort/index.php?action=matiere&annee=2023&mois=12&id=r1.01
 
+require_once('./lib/Date.php');
 require_once('./model/EDT.php');
 require_once('./model/Module.php');
 require_once('./model/SAE.php');
 
+use Application\Lib\Date\Date;
 use Application\Model\EDT\EDT;
 use Application\Model\Module\Module;
 use Application\Model\SAE\SAE;
@@ -14,24 +16,12 @@ if (!isset($_GET['action'])) {
     exit;
 }
 
-$edt = new EDT();
+$edt = new EDT(creerDate());
 
 if ($_GET['action'] === "prof") {
     $donneesJSON = array();
-    $nom;
-    $prenom;
-
-    if (!isset($_GET['nom'])) {
-        $nom = "";
-    } else {
-        $nom = $_GET['nom'];
-    }
-
-    if (!isset($_GET['prenom'])) {
-        $prenom = "";
-    } else {
-        $prenom = $_GET['prenom'];
-    }
+    $nom = (isset($_GET['nom']))? $_GET['nom']: "";
+    $prenom = (isset($_GET['prenom']))? $_GET['prenom']: "";
 
     foreach ($edt->getHeureProf($nom . $prenom) as $moduleNom => $element) {
         if ($element instanceof Module) {
@@ -53,13 +43,7 @@ if ($_GET['action'] === "prof") {
 
 } else if ($_GET['action'] === 'matiere') {
     $donneesJSON = array();
-    $id;
-
-    if (!isset($_GET['id'])) {
-        $id = "";
-    } else {
-        $id = $_GET['id'];
-    }
+    $id = (isset($_GET['id']))? $_GET['id']: "";
 
     foreach ($edt->getHeureMatiere($id) as $prof => $bilan) {
         if (!$bilan instanceof Module) {
@@ -76,4 +60,11 @@ if ($_GET['action'] === "prof") {
     }
 
     echo json_encode($donneesJSON);
+}
+
+function creerDate(): Date {
+    $annee = (isset($_GET['annee']))? intval($_GET['annee']): -1;
+    $mois = (isset($_GET['mois']))? intval($_GET['mois']): -1;
+    
+    return new Date($annee, $mois, 1);
 }

@@ -2,12 +2,14 @@
 
 namespace Application\Model\EDT;
 
+require_once('./lib/Date.php');
 require_once('./lib/StringUtil.php');
 require_once('./model/Bilan.php');
 require_once('./model/cours/AdeToCoursAdapter.php');
 require_once('./model/cours/Cours.php');
 require_once('./model/cours/IGetCours.php');
 
+use Application\Lib\Date\Date;
 use Application\Lib\StringUtil\StringUtil;
 use Application\Model\Bilan\Bilan;
 use Application\Model\Cours\AdeToCoursAdapter\AdeToCoursAdapter;
@@ -19,7 +21,7 @@ class EDT {
     private IGetCours $ade;
     private array $cours;
 
-    public function __construct() {
+    public function __construct(Date $date) {
         $this->resources = [
             1177,   // 1A TP1
             95403,  // 1A TP2
@@ -39,7 +41,7 @@ class EDT {
             36649,  // 3A TP3
             36650   // 3A TP4
         ];
-        $this->ade = new AdeToCoursAdapter();
+        $this->ade = new AdeToCoursAdapter($date);
         $this->cours = $this->ade->getCours($this->resources);
     }
 

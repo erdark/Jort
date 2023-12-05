@@ -27,7 +27,7 @@ class Bilan {
             if (!$cour instanceof Cours) {
                 continue;
             }
-            $bilans[$cour->prof][] = $cour;
+            $bilans[$cour->nom][] = $cour;
         }
 
         // fabrique le bilan de chaque module
