@@ -50,6 +50,7 @@ if ($_GET['action'] === "prof") {
     }
 
     echo json_encode($donneesJSON);
+
 } else if ($_GET['action'] === 'matiere') {
     $donneesJSON = array();
     $id;
@@ -60,7 +61,19 @@ if ($_GET['action'] === "prof") {
         $id = $_GET['id'];
     }
 
+    foreach ($edt->getHeureMatiere($id) as $prof => $bilan) {
+        if (!$bilan instanceof Module) {
+            continue;
+        }
 
+        $donneesJSON[] = array(
+            'nom' => $prof,
+            'tp' => $bilan->getTp(),
+            'td' => $bilan->getTd(),
+            'cm' => $bilan->getCm(),
+            'sae'=> $bilan->getSAE()
+        );
+    }
 
     echo json_encode($donneesJSON);
 }

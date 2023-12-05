@@ -79,16 +79,10 @@ class EDT {
             }
 
             if (StringUtil::condenser($cour->nom) === StringUtil::condenser($id)) {
-                if (mb_substr($cour->nom, 0, 1) == 'R') {
-
-                } elseif (mb_substr($cour->nom, 0, 2) == 'SA') {
-
-                } else {
-
-                }
+                $coursMatiere[] = $cour;
             }
         }
 
-        return $coursMatiere;
+        return Bilan::fabriqueBilansModule($coursMatiere);
     }
 }

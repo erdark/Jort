@@ -43,20 +43,29 @@ implements IGetCours {
 
         // Cour : nom
         if (array_key_exists('SUMMARY', $ade)) {
-            $nom = \Transliterator::create('NFD; [:Nonspacing Mark:] Remove; NFC')
-                ->transliterate($ade['SUMMARY']);
+            $nom = StringUtil::sansAccents($ade['SUMMARY']);
 
             $cours->nom = self::formatCoursNom($nom);
         } 
 
         // Cour : type
         if (array_key_exists('SUMMARY', $ade)) {
-            $mots = explode(' ', $ade['SUMMARY']);
-            $cours->type = substr(
-                end($mots),
-                0,
-                2
-            );
+            $typeADE = ["CM", "TD", "TP", "CC", "CTP"];
+            $nom = StringUtil::sansAccents($ade['SUMMARY']);
+
+            
+
+            if (strpos($nom, "SAE") !== false) {
+                $cours->type = "SAE";
+            } else {
+                $mots = explode(' ', $nom);
+                $type = substr(
+                    end($mots),
+                    0,
+                    2
+                );
+                $cours->type = (in_array($type, $typeADE)) ? $type : "CM";
+            }
         }
 
         // Cour : lieu
@@ -76,7 +85,7 @@ implements IGetCours {
                 }
             }
             if ($position !== false) {
-                $cours->prof = substr($ade['DESCRIPTION'], $position + 2);
+                $cours->prof = StringUtil::sansAccents(substr($ade['DESCRIPTION'], $position + 2));
             }
 
             // Coupe la chaine après le nom du prof

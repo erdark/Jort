@@ -4,7 +4,7 @@ namespace Application\Lib\StringUtil;
 
 class StringUtil {
     public static function condenser(string $chaine): string {
-        return strtolower(str_replace(' ', '', $chaine));
+        return self::sansAccents(strtolower(str_replace(' ', '', $chaine)));
     }
 
     public static function in_arrayStrict(string $chaine, array $tab) : bool {
@@ -29,5 +29,10 @@ class StringUtil {
         }
 
         return -1;
+    }
+
+    public static function sansAccents(string $chaine): string {
+        return  \Transliterator::create('NFD; [:Nonspacing Mark:] Remove; NFC')
+                ->transliterate($chaine);
     }
 }

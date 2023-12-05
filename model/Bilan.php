@@ -27,7 +27,7 @@ class Bilan {
             if (!$cour instanceof Cours) {
                 continue;
             }
-            $bilans[$cour->nom][] = $cour;
+            $bilans[$cour->prof][] = $cour;
         }
 
         // fabrique le bilan de chaque module
@@ -84,6 +84,50 @@ class Bilan {
             }
 
             $bilans[$cle] = $sae;
+        }
+
+        return $bilans;
+    }
+
+    public static function fabriqueBilansProf(array $cours) : array {
+        $cour = null;
+        $bilans = [];
+
+        // Regroupe les cours par prof
+        foreach ($cours as $cour) {
+            if (!$cour instanceof Cours) {
+                continue;
+            }
+            $bilans[$cour->prof][] = $cour;
+        }
+
+        // fabrique le bilan de chaque prof
+        foreach ($bilans as $cle => $cours) {
+            $module = new Module();
+
+            // fabrique un Module pour un prof
+            foreach ($cours as $cour) {
+                if (!$cour instanceof Cours) {
+                    continue;
+                }
+
+                switch ($cour->type) {
+                case "TP":
+                    $module->ajouterTp($cour->getDuree());
+                    break;
+                case "TD":
+                    $module->ajouterTd($cour->getDuree());
+                    break;
+                case "SAE":
+                    $module->ajouterSAE($cour->getDuree());
+                    break;
+                default:
+                    $module->ajouterCm($cour->getDuree());
+                    break;
+                }
+            }
+
+            $bilans[$cle] = $module;
         }
 
         return $bilans;

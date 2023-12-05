@@ -9,11 +9,13 @@ class Module {
     private float $cm;
     private float $td;
     private float $tp;
+    private float $sae;
 
     public function __construct() {
         $this->cm = 0;
         $this->td = 0;
         $this->tp = 0;
+        $this->sae = 0;
     }
 
     /**
@@ -41,6 +43,14 @@ class Module {
     }
 
     /**
+     * Renvoie les sae
+     * @return float
+     */
+    public function getSAE(): float {
+        return $this->sae;
+    }
+
+    /**
      * ajoute des heures de cm
      * @param float nombre d'heures cm
      */
@@ -62,5 +72,13 @@ class Module {
      */
     public function ajouterTp(float $tp) {
         $this->tp += $tp;
+    }
+
+    /**
+     * Ajoute des heures de sae
+     * @param float nombre d'heures sae
+     */
+    public function ajouterSAE(float $sae) {
+        $this->sae += $sae;
     }
 }
