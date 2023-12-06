@@ -1,16 +1,12 @@
 <?php
 // https://dev-lerosie221.users.info.unicaen.fr/Jort/index.php?action=prof&annee=2023&mois=11&nom=JORT&prenom=FabiEnne
 // https://dev-lerosie221.users.info.unicaen.fr/Jort/index.php?action=module&annee=2023&mois=12&id=SAE 4
-// https://dev-lerosie221.users.info.unicaen.fr/Jort/index.php?action=mail&nom=lerosier&prenom=alexandre
 
-require_once('./controleur/Mail.php');
 require_once('./lib/Date.php');
 require_once('./model/EDT.php');
 require_once('./model/Module.php');
 
-use Application\Controleur\Mail\Mail;
 use Application\Lib\Date\Date;
-use Application\Lib\StringUtil\StringUtil;
 use Application\Model\EDT\EDT;
 use Application\Model\Module\Module;
 
@@ -67,17 +63,4 @@ if ($_GET['action'] === "prof") {
 
     echo json_encode($donneesJSON) . "<br>";
 
-} else if ($_GET['action'] === "mail") {
-    if (!isset($_GET['nom']) || !isset($_GET['prenom'])) {
-        exit;
-    }
-
-    if ((new Mail())->envoyer(
-        StringUtil::condenser($_GET['prenom']),
-        StringUtil::condenser($_GET['nom']
-    ))) {
-        echo "Mail envoyé avec succés.";
-    } else {
-        echo "L'envoie du mail à échoué.";
-    }
 }
