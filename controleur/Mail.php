@@ -17,7 +17,7 @@ class Mail {
         $message = "
             Bonjour,
             Veuillez remplir vos horaires avant la fin de la période s'il vous plaît.
-            Cliquez sur le lien pour accéder à la page : https://projet-ade-26911.bubbleapps.io/version-test/consult_ressources.
+            Cliquez sur le lien pour accéder à la page : ----------------.
 
             Cordialement,
             Bot de gestion des heures

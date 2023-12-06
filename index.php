@@ -10,6 +10,7 @@ require_once('./model/Module.php');
 
 use Application\Controleur\Mail\Mail;
 use Application\Lib\Date\Date;
+use Application\Lib\StringUtil\StringUtil;
 use Application\Model\EDT\EDT;
 use Application\Model\Module\Module;
 
@@ -71,7 +72,10 @@ if ($_GET['action'] === "prof") {
         exit;
     }
 
-    if ((new Mail())->envoyer($_GET['prenom'], $_GET['nom'])) {
+    if ((new Mail())->envoyer(
+        StringUtil::condenser($_GET['prenom']),
+        StringUtil::condenser($_GET['nom']
+    ))) {
         echo "Mail envoyé avec succés.";
     } else {
         echo "L'envoie du mail à échoué.";
