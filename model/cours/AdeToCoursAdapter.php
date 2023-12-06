@@ -46,136 +46,158 @@ implements IGetCours {
     public function convertirAdeVersCours(array $ade): Cours {
         $cours = new Cours();
 
-        // Cour : nom
         if (array_key_exists('SUMMARY', $ade)) {
-            $nom = StringUtil::sansAccents($ade['SUMMARY']);
-
-            $cours->nom = self::formatCoursNom($nom);
-        } 
-
-        // Cour : type
-        if (array_key_exists('SUMMARY', $ade)) {
-            $typeADE = ["CM", "TD", "TP", "CC", "CTP"];
-            $nom = StringUtil::sansAccents($ade['SUMMARY']);
-
-            
-
-            if (strpos($nom, "SAE") !== false) {
-                $cours->type = "SAE";
-            } else {
-                $mots = explode(' ', $nom);
-                $type = substr(
-                    end($mots),
-                    0,
-                    2
-                );
-                $cours->type = (in_array($type, $typeADE)) ? $type : "CM";
-            }
+            $cours->nom = $this->extraireNom($ade['SUMMARY']);
+            $cours->type = $this->extraireType($ade['SUMMARY']);
         }
 
-        // Cour : lieu
         if (array_key_exists('LOCATION', $ade)) {
-            $cours->lieu = $ade['LOCATION'];
+            $cours->lieu = $this->extraireLieu($ade['LOCATION']);
         }
 
-        // Cour : prof
         if (array_key_exists('DESCRIPTION', $ade)) {
-            // Coupe la chaine de caractère avant le nom du prof         
-            $position = -1;
-            for ($i = 0; $i < 4; $i++) {
-                $position = strpos($ade['DESCRIPTION'], "\\n", $position + 1);
-
-                if ($position === false) {
-                    break;
-                }
-            }
-            if ($position !== false) {
-                $cours->prof = StringUtil::sansAccents(substr($ade['DESCRIPTION'], $position + 2));
-            }
-
-            // Coupe la chaine après le nom du prof
-            $position = strpos($cours->prof, "\\n");
-            if ($position !== false) {
-                $cours->prof = substr($cours->prof, 0, $position);
-            }
+            $cours->prof = $this->extraireProf($ade['DESCRIPTION']);
+            $cours->groupe = $this->extraireGroupe($ade['DESCRIPTION']);
         }
 
-        // Cour : groupe
-        if (array_key_exists('DESCRIPTION', $ade)) { 
-            // Coupe la chaine de caractère avant le groupe         
-            $position = -1;
-            for ($i = 0; $i < 3; $i++) {
-                $position = strpos($ade['DESCRIPTION'], "\\n", $position + 1);
-
-                if ($position === false) {
-                    break;
-                }
-            }
-            if ($position !== false) {
-                $cours->groupe = substr($ade['DESCRIPTION'], $position + 2);
-            }
-
-            // Coupe la chaine après le groupe
-            $position = strpos($cours->groupe, "\\n");
-            if ($position !== false) {
-                $cours->groupe = substr($cours->groupe, 0, $position);
-            }
-        }
-
-        // Cour : date
         if (array_key_exists('DTSTART', $ade)) {
-            $position = strrpos($ade['DTSTART'], 'T');
-
-            // Coupe la chaîne à partir du T
-            if ($position !== false) {
-                $cours->date = substr($ade['DTSTART'], 0, $position);
-            }
-        }
-
-        // Cour : heureDebut
-        if (array_key_exists('DTSTART', $ade)) {
-            $cours->heureDebut = $this->getHeure($ade['DTSTART']);
+            $cours->date = $this->extraireDate($ade['DTSTART']);
+            $cours->heureDebut = $this->extraireHeure($ade['DTSTART']);
         }
         
-        // Cour : heureDebut
         if (array_key_exists('DTEND', $ade)) {
-            $cours->heureFin = $this->getHeure($ade['DTEND']);
+            $cours->heureFin = $this->extraireHeure($ade['DTEND']);
+        }
+
+        if (/*strpos($cours->nom, "SAE") !== false &&*/ $cours->nom == "R1.05") {
+            echo $cours->nom . "<br>";
+            echo $ade['DESCRIPTION'] . "<br>";
+            echo $ade['SUMMARY'] . "<br>";
+            echo $cours->prof . "<br>";
         }
 
         return $cours;
     }
 
-    private function getHeure(string $heureBrute) : string {
-        $position = strrpos($heureBrute, 'T');
-
-        // Coupe la chaîne à partir du T
-        if ($position !== false) {
-            $heure = substr($heureBrute, $position + 1);
-        }
-        
-        return substr($heure, 0, 4);
-    }
-
-    private function formatCoursNom(string $nom): string {
-        $nomNouveau = $nom;
+    private function extraireNom(string $chaine): string {
+        $nom = StringUtil::sansAccents($chaine);
         $position = 0;
-        $premiereLettre = mb_substr($nom, 0, 1);
+        $premiereLettre = mb_substr($chaine, 0, 1);
 
         if (!($premiereLettre == 'R' || $premiereLettre == 'S')) {
             if ($premiereLettre == 'r' || $premiereLettre == 's') {
-                $nomNouveau = ucfirst($nom);
+                $nom = ucfirst($chaine);
             } else if (is_numeric($premiereLettre)) {
-                $nomNouveau ='R' . substr($nom, 1);
+                $nom ='R' . substr($chaine, 1);
             } else {
                 return $nom;
             }
         }
-        $nomNouveau = (substr($nomNouveau, 0, 7));
+        $nom = (substr($nom, 0, 7));
 
-        if (($position = StringUtil::positionDernierChiffre($nomNouveau)) != -1) {
-            return substr($nomNouveau, 0, $position + 1);
+        if (($position = StringUtil::positionDernierChiffre($nom)) != -1) {
+            $nom = substr($nom, 0, $position + 1);
         }
 
-        return $nomNouveau;
+        return $nom;
+    }
+
+    private function extraireType(string $chaine): string {
+        $chaine = StringUtil::sansAccents($chaine);
+        $typeADE = ["CM", "TD", "TP", "CC", "CT"];
+
+        if (strpos($chaine, "SAE") !== false) {
+            return "SAE";
+        } else {
+            $mots = explode(' ', $chaine);
+            $type = substr(
+                end($mots),
+                0,
+                2
+            );
+            return (in_array($type, $typeADE)) ? $type : "CM";
+        }
+    }
+
+    private function extraireLieu(string $chaine): string {
+        return $chaine;
+    }
+
+    private function extraireProf(string $chaine): string {
+        $prof = "";
+
+        // Coupe la chaine de caractère avant le nom du prof         
+        $position = -1;
+        for ($i = 0; $i < 4; $i++) {
+            $position = strpos($chaine, "\\n", $position + 1);
+
+            if ($position === false) {
+                break;
+            }
+        }
+        if ($position !== false) {
+            $prof = StringUtil::sansAccents(substr($chaine, $position + 2));
+        }
+
+        // Coupe la chaine après le nom du prof
+        $position = strpos($prof, "\\n");
+        if ($position !== false) {
+            $prof = substr($prof, 0, $position);
+        }
+
+        if (strrpos($prof, 'Exported') !== false) {
+            $prof = "Intervenant inconue";
+        }
+
+        return $prof;
+    }
+
+    private function extraireGroupe(string $chaine): string {
+        $groupe = "";
+
+        // Coupe la chaine de caractère avant le groupe         
+        $position = -1;
+        for ($i = 0; $i < 3; $i++) {
+            $position = strpos($chaine, "\\n", $position + 1);
+
+            if ($position === false) {
+                break;
+            }
+        }
+        if ($position !== false) {
+            $groupe = substr($chaine, $position + 2);
+        }
+
+        // Coupe la chaine après le groupe
+        $position = strpos($groupe, "\\n");
+        if ($position !== false) {
+            $groupe = substr($groupe, 0, $position);
+        }
+
+        return $groupe;
+    }
+
+    private function extraireDate(string $chaine): string {
+        $date = "";
+        $position = strrpos($chaine, 'T');
+
+        // Coupe la chaîne à partir du T
+        if ($position !== false) {
+            $date = substr($chaine, 0, $position);
+        }
+
+        return $date;
+    }
+
+    private function extraireHeure(string $chaine): string {
+        $heure = "";
+        $position = strrpos($chaine, 'T');
+
+        // Coupe la chaîne à partir du T
+        if ($position !== false) {
+            $heure = substr($chaine, $position + 1);
+        }
+        
+        return substr($heure, 0, 4);
     }
 }

@@ -1,5 +1,5 @@
 <?php
-// https://dev-lerosie221.users.info.unicaen.fr/Jort/index.php?action=prof&annee=2023&mois=12&nom=DORBEC&prenom=paUl
+// https://dev-lerosie221.users.info.unicaen.fr/Jort/index.php?action=prof&annee=2023&mois=11&nom=JORT&prenom=FabiEnne
 // https://dev-lerosie221.users.info.unicaen.fr/Jort/index.php?action=module&annee=2023&mois=12&id=r1.01
 
 require_once('./lib/Date.php');

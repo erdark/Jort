@@ -49,9 +49,10 @@ class EDT {
         $coursProf = [];
 
         foreach ($this->cours as $cour) {
-            if (!$cour instanceof Cours) {
-                continue;
-            } elseif (StringUtil::condenser($cour->prof) === StringUtil::condenser($prof)) {
+            if (
+                $cour instanceof Cours
+                && StringUtil::condenser($cour->prof) === StringUtil::condenser($prof)
+            ) {
                 $coursProf[] = $cour;
             }
         }
@@ -63,9 +64,10 @@ class EDT {
         $coursMatiere = [];
 
         foreach ($this->cours as $cour) {
-            if (!$cour instanceof Cours) {
-                continue;
-            } elseif (StringUtil::condenser($cour->nom) === StringUtil::condenser($nom)) {
+            if (
+                $cour instanceof Cours
+                && StringUtil::condenser($cour->nom) === StringUtil::condenser($nom)
+            ) {
                 $coursMatiere[] = $cour;
             }
         }
