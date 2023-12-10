@@ -37,7 +37,7 @@ if ($_GET['action'] === "prof") {
         }
     }
 
-    echo json_encode($donneesJSON) . "<br>";
+    echo json_encode($donneesJSON);
 
 } else if ($_GET['action'] === "module") {
     $id = (isset($_GET['id']))? $_GET['id']: "";
@@ -61,6 +61,6 @@ if ($_GET['action'] === "prof") {
         }
     }
 
-    echo json_encode($donneesJSON) . "<br>";
+    echo json_encode($donneesJSON);
 
 }
